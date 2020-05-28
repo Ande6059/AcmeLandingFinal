@@ -3,6 +3,8 @@
 For at få databasen til at virke skal du bare skrive Update-Database i Package Manager Console. 
 Kør derefter programmet for at seede alle 100 nølger.
 
+Kun admin kan se listen af forms der allerede er indsendt; Email: admin@admin.dk, password: "Admin2019!"
+
 For at tjekke nøglerne vælger du ViewData i SerialKey Table. Herfra ville jeg kopiere et par nøgler til at teste indselsen af formularen. 
 Den tjekker for alder, og om nøglen findes i databasen(dermed er valid), og nøglen kan kun bruges én gang(Det lykkedes mig aldrig at tillade 2)
 
