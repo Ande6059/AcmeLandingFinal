@@ -1,0 +1,70 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@inject  IAuthorizationService AuthorizationService
+
+@model IEnumerable<AcmeLandingFinal.Models.Form>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>List of Forms</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+
+
+<table class="table">
+    @if ((await AuthorizationService.AuthorizeAsync(User, "RequireAdminRole")).Succeeded)
+    {
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.FirstName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Lastname)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DateOfBirth)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EmailAddress)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProductSerialNumber)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Lastname)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DateOfBirth)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmailAddress)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProductSerialNumber)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.FormId">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.FormId">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.FormId">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    }
+
+</table>

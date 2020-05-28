@@ -39,14 +39,20 @@ namespace AcmeLandingFinal
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>()
+                .AddRoles<IdentityRole>()
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdminRole",
+                    policy => policy.RequireRole("Admin"));
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider service)
         {
             if (env.IsDevelopment())
             {
@@ -72,6 +78,39 @@ namespace AcmeLandingFinal
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            CreateUserRole(service).Wait();
+        }
+        private async Task CreateUserRole(IServiceProvider serviceProvider)
+        {
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            IdentityResult roleResult;
+            var roleCheck = await roleManager.RoleExistsAsync("Admin");
+
+            if (!roleCheck)
+            {
+                roleResult = await roleManager.CreateAsync(new IdentityRole("Admin"));
+            }
+
+            var _admin = await userManager.FindByEmailAsync("admin@admin.dk");
+            if (_admin == null)
+            {
+                var admin = new IdentityUser
+                {
+                    UserName = "admin@admin.dk",
+                    Email = "admin@admin.dk"
+
+                };
+
+                var createAdmin = await userManager.CreateAsync(admin, "Admin2019!");
+                if (createAdmin.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(admin, "Admin");
+                }
+            }
+
+
         }
     }
 }
