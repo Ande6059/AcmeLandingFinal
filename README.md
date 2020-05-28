@@ -1,5 +1,6 @@
 # AcmeLandingFinal
 
+Databasen er lavet med Sql Server Object.
 For at få databasen til at virke skal du bare skrive Update-Database i Package Manager Console. 
 Kør derefter programmet for at seede alle 100 nølger.
 
